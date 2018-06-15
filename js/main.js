@@ -22,7 +22,7 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax"]
+  let images = ["health", "licorn", "parallax", "ground"]
 
   data = {
     life: 100,
@@ -44,6 +44,8 @@ function setup() {
     sprites = {
       parallax: new PIXI.Sprite(textures.parallax),
       parallax2: new PIXI.Sprite(textures.parallax),
+      ground: new PIXI.Sprite(textures.ground),
+      ground2: new PIXI.Sprite(textures.ground),
       logo: new PIXI.Sprite(textures.logo),
       health: new PIXI.Sprite(textures.health),
       licorn: new PIXI.Sprite(textures.licorn),
@@ -81,10 +83,21 @@ function setup() {
     sprites.parallax2.y = 0
 
     util.defilParallax = (delta) => {
-      sprites.parallax.x -= data.speed/2 * delta
-      sprites.parallax2.x -= data.speed/2 * delta
+      sprites.parallax.x -= data.speed * delta / 2
+      sprites.parallax2.x -= data.speed * delta / 2
       if(sprites.parallax.x < -sprites.parallax.width) sprites.parallax.x = sprites.parallax2.x + sprites.parallax2.width
       if(sprites.parallax2.x < -sprites.parallax2.width) sprites.parallax2.x = sprites.parallax.x + sprites.parallax.width
+    }
+
+    sprites.ground.x = 0
+    sprites.ground2.x = sprites.ground.width
+    sprites.ground.y = innerHeight - 120
+    sprites.ground2.y = innerHeight - 120
+    util.defilGround = (delta) => {
+      sprites.ground.x -= data.speed * delta
+      sprites.ground2.x -= data.speed * delta
+      if(sprites.ground.x < -sprites.ground.width) sprites.ground.x = sprites.ground2.x + sprites.ground2.width
+      if(sprites.ground2.x < -sprites.ground2.width) sprites.ground2.x = sprites.ground.x + sprites.ground.width
     }
 
     // add sprites
@@ -124,6 +137,7 @@ const loop = (delta) => {
 
   // defil parallax
   util.defilParallax(delta)
+  util.defilGround(delta)
 
   // momentum
   if(!data.isGliding) {
