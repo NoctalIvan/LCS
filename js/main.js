@@ -3,6 +3,10 @@ var app;
 
 let data
 const util = {}
+let textures = {}
+let sprites = {}
+
+let clickEvent = () => {}
 
 // Fullscreen in pixi is resizing the renderer to be window.innerWidth by window.innerHeight
 window.addEventListener("resize", function () {
@@ -25,15 +29,19 @@ function setup() {
     drop: 0.02,
     inv: 100,
     speed: 5,
+    momentum: 0,
+    gravity: 0.3,
+    jumpStrength: 12,
+    isJumping: false,
+    isGliding: false,
   }
 
   let loader = PIXI.loader.add(images.map(getImagePath)).load(() => {
 
     // textures
-    let textures = {}
     images.forEach(i => textures[i] = PIXI.loader.resources[getImagePath(i)].texture)
 
-    let sprites = {
+    sprites = {
       parallax: new PIXI.Sprite(textures.parallax),
       parallax2: new PIXI.Sprite(textures.parallax),
       logo: new PIXI.Sprite(textures.logo),
@@ -42,8 +50,20 @@ function setup() {
     }
 
     // positions
-    sprites.licorn.y = innerHeight - 100 - sprites.licorn.height
-    sprites.licorn.x = 40
+    util.licornOnGround = () => {sprites.licorn.y = innerHeight - 100 - sprites.licorn.height}
+    util.isLicornOnGround = () => sprites.licorn.y > innerHeight - 100 - sprites.licorn.height
+    util.licornOnGround()
+    sprites.licorn.x = 150
+
+    util.licornJump = () => {
+      data.isJumping = true
+      data.momentum -= data.jumpStrength
+    }
+    util.licornGlideOn = () => {
+      data.isGliding = true
+      data.momentum = 0
+    }
+    util.licornGlideOff = () => data.isGliding = false
 
     sprites.health.x = 10
     sprites.health.y = 10
@@ -73,7 +93,25 @@ function setup() {
     }
 
     app.ticker.add(loop)
+
+    // click event
+    document.getElementsByTagName('canvas')[0].onclick = (e) => {
+      clickHandler(e.screenX, e.screenY)
+    }
   })
+}
+
+const clickHandler = (x,y) => {
+  if(!data.isJumping) {
+    util.licornJump()
+    return
+  }
+
+  if(!data.isGliding) {
+    util.licornGlideOn()
+  } else {
+    util.licornGlideOff()
+  }
 }
 
 const loop = (delta) => {
@@ -86,6 +124,17 @@ const loop = (delta) => {
 
   // defil parallax
   util.defilParallax(delta)
+
+  // momentum
+  if(!data.isGliding) {
+    sprites.licorn.y += data.momentum
+    data.momentum += data.gravity
+  }
+  if(util.isLicornOnGround()){
+    data.momentum = 0
+    util.licornOnGround
+    data.isJumping = false
+  }
 }
 
 setup();
