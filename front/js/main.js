@@ -22,7 +22,7 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax", "ground", "mine", "coin", "life", "boost"]
+  let images = ["health", "licorn", "parallax", "ground", "mine", "coin", "life", "boost", "cloud"]
 
   data = {
     time: 0,
@@ -36,6 +36,7 @@ function setup() {
     isJumping: false,
     isGliding: false,
     superMode: 0,
+    points: 0,
   }
 
   let loader = PIXI.loader.add(images.map(getImagePath)).load(() => {
@@ -71,7 +72,7 @@ function setup() {
 
     sprites.health.x = 10
     sprites.health.y = 10
-    util.resizeHealth = () => { if(data.life > 0) sprites.health.width = (innerWidth - 2*10) * data.life/100 }
+    util.resizeHealth = () => { sprites.health.width = (innerWidth - 2*10) * Math.max(data.life,0)/100 }
     util.resizeHealth()
 
     const parallaxRatio = sprites.parallax.height / innerHeight
@@ -138,13 +139,15 @@ const unclickHandler = (x,y) => {
 
 const loop = (delta) => {
   data.time += delta
+  data.points += Math.floor(delta*10*data.speed)
+  console.log(data.points)
 
   // accelerate
-  data.speed += 0.0001 * delta
+  data.speed += 0.001 * delta
 
   // drop life
   data.inv -= delta
-  if(data.inv < 0 && !data.superMode) {
+  if(data.inv < 0 && data.superMode < 0) {
     data.life -= data.drop * delta
     util.resizeHealth()
   }
@@ -160,6 +163,10 @@ const loop = (delta) => {
   util.defilParallax(delta * superModeMult)
   util.defilGround(delta * superModeMult)
   defilPattern(delta * superModeMult)
+  defilClouds(delta * superModeMult)
+
+  // animate
+  animateClouds(delta)
 
   // momentum
   if(!data.isGliding) {
@@ -183,11 +190,18 @@ const loop = (delta) => {
   let coll = checkLicornCollision()
   while(coll){
     if(coll.type == "coin"){
-      
+      data.points += 1000
     } else if(coll.type == "mine") {
-
+      popCloud(coll.x, coll.y)
+      if(data.superMode < 0 && data.inv <  0) {
+        data.life -= 10
+        data.inv = 3
+        util.resizeHealth()
+      }
     } else if(coll.type == "life") {
-
+      data.life += 15
+      util.resizeHealth()
+      if(data.life > 100) data.life = 100
     } else if(coll.type == "boost") {
       data.superMode = 250
     }

@@ -1,5 +1,4 @@
 const getRandomPattern = () => {
-  // return patterns[6]
   return patterns[Math.floor(Math.random() * patterns.length)]
 }
 
@@ -47,7 +46,8 @@ const deleteInvisiblePattern = () => {
 }
 
 const archivePattern = () => {
-  oldPatternSprites = patternSprites
+  if(oldPatternSprites) oldPatternSprites = oldPatternSprites.concat(patternSprites)
+  else oldPatternSprites = patternSprites
   patternSprites = undefined
 }
 
