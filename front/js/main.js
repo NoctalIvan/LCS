@@ -37,6 +37,7 @@ function setup() {
     isGliding: false,
     superMode: 0,
     points: 0,
+    invAlternator: 0,
   }
 
   let loader = PIXI.loader.add(images.map(getImagePath)).load(() => {
@@ -140,7 +141,6 @@ const unclickHandler = (x,y) => {
 const loop = (delta) => {
   data.time += delta
   data.points += Math.floor(delta*10*data.speed)
-  console.log(data.points)
 
   // accelerate
   data.speed += 0.001 * delta
@@ -167,6 +167,10 @@ const loop = (delta) => {
 
   // animate
   animateClouds(delta)
+  data.invAlternator = (data.invAlternator + 1) % 10
+  if(data.inv > 0 && data.invAlternator > 5) {
+    sprites.licorn.alpha = 0
+  } else sprites.licorn.alpha = 1
 
   // momentum
   if(!data.isGliding) {
@@ -195,7 +199,7 @@ const loop = (delta) => {
       popCloud(coll.x, coll.y)
       if(data.superMode < 0 && data.inv <  0) {
         data.life -= 10
-        data.inv = 3
+        data.inv = 30 * 2
         util.resizeHealth()
       }
     } else if(coll.type == "life") {
