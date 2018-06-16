@@ -22,16 +22,17 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax", "ground"]
+  let images = ["health", "licorn", "parallax", "ground", "mine"]
 
   data = {
+    time: 0,
     life: 100,
     drop: 0.02,
     inv: 100,
-    speed: 5,
+    speed: 8,
     momentum: 0,
-    gravity: 0.3,
-    jumpStrength: 12,
+    gravity: 0.8,
+    jumpStrength: 20,
     isJumping: false,
     isGliding: false,
   }
@@ -69,7 +70,7 @@ function setup() {
 
     sprites.health.x = 10
     sprites.health.y = 10
-    util.resizeHealth = () => { sprites.health.width = (innerWidth - 2*10) * data.life/100 }
+    util.resizeHealth = () => { if(data.life > 0) sprites.health.width = (innerWidth - 2*10) * data.life/100 }
     util.resizeHealth()
 
     const parallaxRatio = sprites.parallax.height / innerHeight
@@ -108,7 +109,7 @@ function setup() {
     app.ticker.add(loop)
 
     // click event
-    document.getElementsByTagName('canvas')[0].onclick = (e) => {
+    document.getElementsByTagName('canvas')[0].ontouchstart = (e) => {
       clickHandler(e.screenX, e.screenY)
     }
   })
@@ -128,6 +129,11 @@ const clickHandler = (x,y) => {
 }
 
 const loop = (delta) => {
+  data.time += delta
+
+  // accelerate
+  data.speed += 0.0001 * delta
+
   // drop life
   data.inv -= delta
   if(data.inv < 0) {
@@ -138,6 +144,7 @@ const loop = (delta) => {
   // defil parallax
   util.defilParallax(delta)
   util.defilGround(delta)
+  defilPattern(delta)
 
   // momentum
   if(!data.isGliding) {
@@ -148,6 +155,12 @@ const loop = (delta) => {
     data.momentum = 0
     util.licornOnGround
     data.isJumping = false
+  }
+
+  // patterns
+  if(data.time > 30 * 3 && isFinishedPattern()){
+    deletePattern()
+    putPattern(getRandomPattern())
   }
 }
 
