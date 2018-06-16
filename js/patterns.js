@@ -1,6 +1,7 @@
 const coin = (x, y) => ({type: "coin", x, y, id: Math.random()})
 const mine = (x, y) => ({type: "mine", x, y, id: Math.random()})
 const life = (x, y) => ({type: "life", x, y, id: Math.random()})
+const boost = (x, y) => ({type: "boost", x, y, id: Math.random()})
 
 const range = (min, max, step) => {
   const arr = []
@@ -39,6 +40,9 @@ const patterns = [
     ... range(10,480, 30).map(x => coin(x, 120)),
     ... range(10,480, 70).map(x => coin(x, 300)),
   ],
+  [
+    boost(200, 200),
+  ]
 ]
 
 const getRandomPattern = () => {

@@ -22,19 +22,20 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax", "ground", "mine", "coin", "life"]
+  let images = ["health", "licorn", "parallax", "ground", "mine", "coin", "life", "boost"]
 
   data = {
     time: 0,
     life: 100,
     drop: 0.02,
-    inv: 100,
+    inv: 0,
     speed: 8,
     momentum: 0,
     gravity: 0.8,
     jumpStrength: 20,
     isJumping: false,
     isGliding: false,
+    superMode: 0,
   }
 
   let loader = PIXI.loader.add(images.map(getImagePath)).load(() => {
@@ -143,15 +144,22 @@ const loop = (delta) => {
 
   // drop life
   data.inv -= delta
-  if(data.inv < 0) {
+  if(data.inv < 0 && !data.superMode) {
     data.life -= data.drop * delta
     util.resizeHealth()
   }
 
+  // supermode
+  data.superMode -= 1 * delta
+  const superModeMult = data.superMode > 0 ? 5 : 1
+  if(data.superMode < 0 && data.superMode > -2) {
+    data.inv = 100
+  }
+
   // defil parallax
-  util.defilParallax(delta)
-  util.defilGround(delta)
-  defilPattern(delta)
+  util.defilParallax(delta * superModeMult)
+  util.defilGround(delta * superModeMult)
+  defilPattern(delta * superModeMult)
 
   // momentum
   if(!data.isGliding) {
@@ -175,16 +183,17 @@ const loop = (delta) => {
   let coll = checkLicornCollision()
   while(coll){
     if(coll.type == "coin"){
-      app.stage.removeChild(coll)
-      coll.collided = true
+      
     } else if(coll.type == "mine") {
-      app.stage.removeChild(coll)
-      coll.collided = true
+
     } else if(coll.type == "life") {
-      app.stage.removeChild(coll)
-      coll.collided = true
+
+    } else if(coll.type == "boost") {
+      data.superMode = 250
     }
 
+    app.stage.removeChild(coll)
+    coll.collided = true
     coll = checkLicornCollision()
   }
 }
