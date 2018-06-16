@@ -22,7 +22,7 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax", "ground", "mine"]
+  let images = ["health", "licorn", "parallax", "ground", "mine", "coin", "life"]
 
   data = {
     time: 0,
@@ -112,6 +112,9 @@ function setup() {
     document.getElementsByTagName('canvas')[0].ontouchstart = (e) => {
       clickHandler(e.screenX, e.screenY)
     }
+    document.getElementsByTagName('canvas')[0].ontouchend = (e) => {
+      unclickHandler(e.screenX, e.screenY)
+    }
   })
 }
 
@@ -123,7 +126,11 @@ const clickHandler = (x,y) => {
 
   if(!data.isGliding) {
     util.licornGlideOn()
-  } else {
+  }
+}
+
+const unclickHandler = (x,y) => {
+  if(data.isGliding){
     util.licornGlideOff()
   }
 }
@@ -158,10 +165,15 @@ const loop = (delta) => {
   }
 
   // patterns
-  if(data.time > 30 * 3 && isFinishedPattern()){
-    deletePattern()
+  deleteInvisiblePattern()
+  if(isFinishedPattern()){ // && time > 30*3
+    archivePattern()
     putPattern(getRandomPattern())
   }
+
+  // collision
+  const coll = checkLicornCollision()
+  if(coll) console.log(coll.type)
 }
 
 setup();
