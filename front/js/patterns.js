@@ -1,52 +1,5 @@
-const coin = (x, y) => ({type: "coin", x, y, id: Math.random()})
-const mine = (x, y) => ({type: "mine", x, y, id: Math.random()})
-const life = (x, y) => ({type: "life", x, y, id: Math.random()})
-const boost = (x, y) => ({type: "boost", x, y, id: Math.random()})
-
-const range = (min, max, step) => {
-  const arr = []
-  for(var i = min; i <= max; i += step) arr.push(i)
-  return arr
-}
-
-const patterns = [
-  [
-    ... range(0,400, 100).map(x => mine(x,0)),
-    mine(200,300),
-
-    ... range(50, 400, 50).map(x => coin(x, 140)),
-    ... range(50, 350, 50).map(x => coin(x+20, 220)),
-  ],
-  [
-    mine(0,0),
-    mine(320, 0),
-    life(170, 0),
-
-    ... range(0,200, 50).map(x => coin(x,  150 + x/2)),
-    ... range(0, 150, 50).map(x => coin(400-x, 150 + x/2)),
-  ],
-  [
-    ... range(0, 400, 30).map(x => coin(x, x)),
-    ... range(0, 390, 30).map(x => coin(x, 390-x)),
-  ],
-  [
-    ... range(0, 400, 30).map(x => coin(x, x)),
-    ... range(0, 390, 30).map(x => coin(x, 390-x)),
-    mine(0, 160),
-    mine(340, 160),
-  ],
-  [
-    ... range(0,400, 100).map(x => mine(x, 150)),
-    ... range(10,480, 30).map(x => coin(x, 120)),
-    ... range(10,480, 70).map(x => coin(x, 300)),
-  ],
-  [
-    boost(200, 200),
-  ]
-]
-
 const getRandomPattern = () => {
-  return patterns[4]
+  return patterns[6]
   // return patterns[Math.floor(Math.random() * patterns.length)]
 }
 
