@@ -1,6 +1,6 @@
 const getRandomPattern = () => {
-  return patterns[6]
-  // return patterns[Math.floor(Math.random() * patterns.length)]
+  // return patterns[6]
+  return patterns[Math.floor(Math.random() * patterns.length)]
 }
 
 let patternSprites 

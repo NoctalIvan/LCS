@@ -26,17 +26,18 @@ const createPattern = (seed) => {
   if(seed < 0.45) {
     const maxStep = Math.random()*800 + 400
     return [
-      ... range(Math.random()*10, maxStep, 50).map(x => coin(x, sinOrCos(x/30)*150 + 150)),
+      ... range(Math.random()*10, maxStep, 50).map(x => coin(x, sinOrCos(x/150)*150 + 150)),
       ... range(Math.random()*10, maxStep, 100 + Math.random()*100).map(x => mine(x, sinOrCos(x)*200 + 150)),
     ]
   }
   // mine lines + potion
   if(seed < 0.55) {
     const height = Math.floor(Math.random()*3) * 150
-    const pot = Math.random() > 0.5 ? 250 : 50
+    let potHeight = Math.floor(Math.random()*3) * 150
+    while(potHeight == height) potHeight = Math.floor(Math.random()*3) * 150
     return [
       ... range(0, 800, 100).map(x => mine(x, height)),
-      life(600, pot),
+      life(600, potHeight),
     ]
   }
   // floor pikes + coins
@@ -45,7 +46,7 @@ const createPattern = (seed) => {
     return [
       ... range(0, maxStep, 100).map(x => mine(x, 0)),
       ... range(0,1,1).map(x => mine(Math.random()*maxStep, Math.random() * 200 + 150)),
-      ... range(Math.random()*10, maxStep, 50).map(x => coin(x, sinOrCos(x/30)*150 + 150)),
+      ... range(Math.random()*10, maxStep, 50).map(x => coin(x, sinOrCos(x/150)*120 + 220)),
     ]
   }
   // inter + random coins
@@ -54,7 +55,7 @@ const createPattern = (seed) => {
     return [
       ... range(0, maxStep, 100).map(x => mine(x, 0)),
       ... range(0, maxStep, 100).map(x => mine(x, 300)),
-      ... range(Math.random()*10, maxStep, 50).map(x => coin(x, sinOrCos(x/30)*150 + 150)),
+      ... range(Math.random()*10, maxStep, 50).map(x => coin(x, sinOrCos(x/150)*150 + 150)),
     ]
   }
   // mine walls
@@ -75,7 +76,7 @@ const createPattern = (seed) => {
   // life & coins
   const maxStepSeed = Math.random()*600
   return [
-    ... range(Math.random()*10, maxStepSeed + 400, 50).map(x => coin(x, sinOrCos(x/30)*150 + 150)),
+    ... range(Math.random()*10, maxStepSeed + 400, 50).map(x => coin(x, sinOrCos(x/150)*150 + 150)),
     life(Math.random()*maxStepSeed + 300, Math.random()*200 + 100)
   ] 
 }
@@ -86,19 +87,35 @@ const params = {
   crossRatio: 0.3,
   mutationChances: 0.2,
   mutationDegree: 0.1,
-  maxIteration: 50,
+  maxIteration: 100,
 }
 
 const heuristique = (pat) => {
-  return 1
+  let score = 0
+
+  for(var item1 of pat){
+    for(var item2 of pat) {
+      if(item1.type == "coin" && item2.type == "coin"){
+        score -= Math.abs(item1.x - item2.x) + Math.abs(item1.x - item2.x)
+      } else {
+        score += Math.abs(item1.x - item2.x) + Math.abs(item1.x - item2.x)
+      }
+    }
+  }
+
+  score = score / pat.length
+  return score
 }
 
 const crossPattern = (p1, p2) => {
-  return p1
+  const arr =  p1.concat(p2).shuffle().slice((p1.length + p2.length) / 2)
 }
 
-const mutatePattern = () => {
-
+const mutatePattern = (pat) => {
+  for(var p of pat){
+    p.x = p.x + Math.random() * params.mutationChances * 50 * (Math.random() > 0.5 ? -1 : 1)
+    p.y = p.y + Math.random() * params.mutationChances * 50 * (Math.random() > 0.5 ? -1 : 1)
+  }
 }
 
 /* RUN */
@@ -115,6 +132,7 @@ Array.prototype.shuffle = function()  {
       const j = Math.floor(Math.random() * (i + 1));
       [this[i], this[j]] = [this[j], this[i]];
   }
+  return this
 }
 
 let population = range(1,params.population,1).map(a => createPattern(Math.random()))
@@ -137,8 +155,9 @@ for(var iteration = 1; iteration <= params.maxIteration; iteration ++) {
     population.push(crossPattern(population[i], population[i+1]))
   }
   
+  population = population.filter(p => p != undefined)
   while(population.length < params.population) {
-    population.push(createPattern(Math.random))
+    population.push(createPattern(Math.random()))
   }
 
   for(var p of population) if(Math.random() < params.mutationChances) {
