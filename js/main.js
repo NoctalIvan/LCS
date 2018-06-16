@@ -172,8 +172,21 @@ const loop = (delta) => {
   }
 
   // collision
-  const coll = checkLicornCollision()
-  if(coll) console.log(coll.type)
+  let coll = checkLicornCollision()
+  while(coll){
+    if(coll.type == "coin"){
+      app.stage.removeChild(coll)
+      coll.collided = true
+    } else if(coll.type == "mine") {
+      app.stage.removeChild(coll)
+      coll.collided = true
+    } else if(coll.type == "life") {
+      app.stage.removeChild(coll)
+      coll.collided = true
+    }
+
+    coll = checkLicornCollision()
+  }
 }
 
 setup();

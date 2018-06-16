@@ -1,6 +1,6 @@
-const coin = (x, y) => ({type: "coin", x, y})
-const mine = (x, y) => ({type: "mine", x, y})
-const life = (x, y) => ({type: "life", x, y})
+const coin = (x, y) => ({type: "coin", x, y, id: Math.random()})
+const mine = (x, y) => ({type: "mine", x, y, id: Math.random()})
+const life = (x, y) => ({type: "life", x, y, id: Math.random()})
 
 const range = (min, max, step) => {
   const arr = []
@@ -34,11 +34,16 @@ const patterns = [
     mine(0, 160),
     mine(340, 160),
   ],
+  [
+    ... range(0,400, 100).map(x => mine(x, 150)),
+    ... range(10,480, 30).map(x => coin(x, 120)),
+    ... range(10,480, 70).map(x => coin(x, 300)),
+  ],
 ]
 
 const getRandomPattern = () => {
-  //return patterns[0]
-  return patterns[Math.floor(Math.random() * patterns.length)]
+  return patterns[4]
+  // return patterns[Math.floor(Math.random() * patterns.length)]
 }
 
 let patternSprites 
@@ -98,9 +103,10 @@ const isColliding = (s1, s2) => {
 }
 
 const checkLicornCollision = () => {
-  const pats = (patternSprites || []).concat(oldPatternSprites || [])
+  const pats = (patternSprites || []).concat(oldPatternSprites || []).filter(a => !a.collided)
+  const licornHitbox = {... sprites.licorn,  x: sprites.licorn.x + 20, y: sprites.licorn.y + 20, width: sprites.licorn.width - 40, height: sprites.licorn.height - 40}
   for(const pat of pats) {
-    if(isColliding(sprites.licorn, pat)) return pat
+    if(isColliding(licornHitbox, pat)) return pat
   }
   return undefined
 }
