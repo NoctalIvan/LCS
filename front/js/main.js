@@ -139,6 +139,8 @@ const unclickHandler = (x,y) => {
 }
 
 const loop = (delta) => {
+  if(data.ended) return
+
   data.time += delta
   data.points += Math.floor(delta*10*data.speed)
 
@@ -213,6 +215,13 @@ const loop = (delta) => {
     app.stage.removeChild(coll)
     coll.collided = true
     coll = checkLicornCollision()
+  }
+
+  // death
+  if(data.life < 0 && isLicornOnGround()){
+    data.ended = true
+    localStorage.setItem('score', data.score)
+    window.location.href = '/result'
   }
 }
 

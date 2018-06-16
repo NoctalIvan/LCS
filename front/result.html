@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <link href="/css/rotateStyle.css" rel="stylesheet">
+  </head>
+  <body style="margin: 0">
+
+    <h1>Bravo</h1>
+    <h2 id="score">0</h2>
+    <button onclick="window.location.href = '/game'">Rejouer</button>
+
+    <div id="info">
+      <img src="/images/rotate.jpg"/>
+    </div>
+
+    <script>
+      let score = localStorage.getItem('score') || 0
+      let displayScore = 0
+      setInterval(() => {
+        if(displayScore >= score) return
+        displayScore += Math.floor(score / 300)
+        document.getElementById('score').innerHTML = displayScore
+      }, 1)
+    </script>
+  </body>
+</html>

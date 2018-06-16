@@ -1,16 +1,83 @@
-<html lang="en" class=""><head><script src="//static.codepen.io/assets/editor/live/console_runner-ce3034e6bde3912cc25f83cccb7caa2b0f976196f2f2d52303a462c826d54a73.js"></script><script src="//static.codepen.io/assets/editor/live/css_live_reload_init-890dc39bb89183d4642d58b1ae5376a0193342f9aed88ea04330dc14c8d52f55.js"></script><meta charset="UTF-8"><meta name="robots" content="noindex"><link rel="shortcut icon" type="image/x-icon" href="//static.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"><link rel="mask-icon" type="" href="//static.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111"><link rel="canonical" href="https://codepen.io/iamnotsam/pen/RgeOrK">
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="/css/rotateStyle.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css"> -->
 
+    <style>
+      h1 {
+        text-align: center
+      }
 
-  <style class="cp-pen-styles">body {
-    background-color: navy;
-  }
-  </style></head><body>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/minireset.css/0.0.2/minireset.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.4.2/pixi.min.js"></script>
-   
-  <script src="//static.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js"></script>
-  <script src="/js/patternList.js" ></script>
-  <script src="/js/patterns.js" ></script>
-  <script src="/js/cloud.js" ></script>
-  <script src="/js/main.js" ></script>
-  </body></html>
+      #score {
+        position: absolute;
+        display: none;
+        top: 5%;
+        right: 5%;
+        width: 90%;
+        height: 90%;
+        background: rgba(255,255,255,0.9);
+        border-radius: 1%;
+        border: 1px red solid;
+      }
+
+      #score.open {
+        display: block;
+      }
+      
+      .score-btn {
+        position: absolute;
+        right: 2%;
+        top: 2%;
+      }
+
+      .score-btn img {
+        height: 1em;
+        position: relative;
+        top: 0.2em;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>hey</h1>
+
+    <!-- <div class="container">
+      <table class="centered">
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Name</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="scoreBody">
+
+        </tbody>
+      </table>
+    </div> -->
+
+    <div id="info">
+      <img src="/images/rotate.jpg"/>
+    </div>
+
+    <script>
+      // loads score
+      const req = new XMLHttpRequest();
+
+      req.onreadystatechange = function(event) {
+          // XMLHttpRequest.DONE === 4
+          if (this.readyState === XMLHttpRequest.DONE) {
+              if (this.status === 200) {
+                  console.log("Réponse reçue: %s", this.responseText);
+              } else {
+                  console.log("Status de la réponse: %d (%s)", this.status, this.statusText);
+              }
+          }
+      };
+
+      req.open('GET', 'http://www.mozilla.org/', true);
+      req.send(null);
+    </script>
+  </body>
+</html>

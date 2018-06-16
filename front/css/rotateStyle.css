@@ -1,0 +1,19 @@
+#info {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.9);
+}
+
+#info img {
+  width: 70%;
+  margin-left: 15%;
+  margin-top: 40%;
+}
+
+@media all and (orientation:portrait) {
+  #info {
+    display: block;
+  }
+}
