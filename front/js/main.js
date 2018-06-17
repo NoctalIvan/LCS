@@ -5,6 +5,7 @@ let data
 const util = {}
 let textures = {}
 let sprites = {}
+let score 
 
 let clickEvent = () => {}
 
@@ -28,20 +29,21 @@ function setup() {
     time: 0,
     life: 100,
     drop: 0.02,
-    inv: 0,
+    inv: -1,
     speed: 8,
     momentum: 0,
     gravity: 0.8,
     jumpStrength: 20,
     isJumping: false,
     isGliding: false,
-    superMode: 0,
+    superMode: -1,
     points: 0,
     invAlternator: 0,
 
     animateFrame: 0,
     frameSpeed: 5,
     frameTimeout: 5,
+    ground: 80,
   }
 
   let loader = PIXI.loader.add(images.map(getImagePath)).load(() => {
@@ -61,9 +63,13 @@ function setup() {
       licorn: new PIXI.Sprite(textures.licorn1),
     }
 
+    score = new PIXI.Text('0', { fill: 'white' })
+    score.x = 20
+    score.y = 20
+
     // positions
-    util.licornOnGround = () => {sprites.licorn.y = innerHeight - 100 - sprites.licorn.height}
-    util.isLicornOnGround = () => sprites.licorn.y > innerHeight - 100 - sprites.licorn.height
+    util.licornOnGround = () => {sprites.licorn.y = innerHeight - data.ground - sprites.licorn.height}
+    util.isLicornOnGround = () => sprites.licorn.y > innerHeight - data.ground - sprites.licorn.height
     util.licornOnGround()
     sprites.licorn.x = 150
 
@@ -72,6 +78,7 @@ function setup() {
       data.momentum -= data.jumpStrength
     }
     util.licornGlideOn = () => {
+      if(data.life < 0) return
       data.isGliding = true
       data.momentum = 0
     }
@@ -129,6 +136,7 @@ function setup() {
     for(var s in sprites) {
       app.stage.addChild(sprites[s])
     }
+    app.stage.addChild(score)
 
     app.ticker.add(loop)
 
@@ -164,6 +172,7 @@ const loop = (delta) => {
 
   data.time += delta
   data.points += Math.floor(delta*10*data.speed)
+  score.text = data.points.toLocaleString()
 
   // accelerate
   data.speed += 0.001 * delta
@@ -260,6 +269,9 @@ const loop = (delta) => {
   }
 
   // death
+  if(data.life == 0) {
+    util.licornGlideOff()
+  }
   if(data.life < 0 && util.isLicornOnGround()){
     data.ended = true
     localStorage.setItem('score', data.score)
