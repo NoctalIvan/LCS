@@ -7,10 +7,17 @@ let oldPatternSprites
 
 const putPattern = (pat) => {
   patternSprites = pat.map(item => {
-    const a = new PIXI.Sprite(textures[item.type])
-    a.type = item.type
+    let a
+    if(item.type == "mine" && item.y == 0) {
+      a = new PIXI.Sprite(textures.groundMine)
+      a.y = innerHeight - item.y - 60 - a.height      
+    } else {
+      a = new PIXI.Sprite(textures[item.type])
+      a.y = innerHeight - item.y - 100 - a.height
+    }
+
     a.x = item.x + innerWidth
-    a.y = innerHeight - item.y - 100 - a.height
+    a.type = item.type
     return a
   })
   patternSprites.map(p => app.stage.addChild(p))

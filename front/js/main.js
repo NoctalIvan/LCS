@@ -22,7 +22,7 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax", "ground", "mine", "coin", "life", "boost", "cloud"]
+  let images = ["health", "licorn", "parallax", "backParallax", "ground", "mine", "coin", "life", "boost", "cloud", "groundMine"]
 
   data = {
     time: 0,
@@ -46,6 +46,8 @@ function setup() {
     images.forEach(i => textures[i] = PIXI.loader.resources[getImagePath(i)].texture)
 
     sprites = {
+      backParallax: new PIXI.Sprite(textures.backParallax),
+      backParallax2: new PIXI.Sprite(textures.backParallax),
       parallax: new PIXI.Sprite(textures.parallax),
       parallax2: new PIXI.Sprite(textures.parallax),
       ground: new PIXI.Sprite(textures.ground),
@@ -86,11 +88,26 @@ function setup() {
     sprites.parallax.y = 0
     sprites.parallax2.y = 0
 
+    const backParallaxRatio = sprites.backParallax.height / innerHeight
+    sprites.backParallax.height = innerHeight
+    sprites.backParallax2.height = innerHeight
+    sprites.backParallax.width = sprites.backParallax.width * backParallaxRatio
+    sprites.backParallax2.width = sprites.backParallax.width * backParallaxRatio
+    sprites.backParallax.x = 0
+    sprites.backParallax2.x = sprites.backParallax.width
+    sprites.backParallax.y = 0
+    sprites.backParallax2.y = 0
+
     util.defilParallax = (delta) => {
       sprites.parallax.x -= data.speed * delta / 2
       sprites.parallax2.x -= data.speed * delta / 2
       if(sprites.parallax.x < -sprites.parallax.width) sprites.parallax.x = sprites.parallax2.x + sprites.parallax2.width
       if(sprites.parallax2.x < -sprites.parallax2.width) sprites.parallax2.x = sprites.parallax.x + sprites.parallax.width
+
+      sprites.backParallax.x -= data.speed * delta / 4
+      sprites.backParallax2.x -= data.speed * delta / 4
+      if(sprites.backParallax.x < -sprites.backParallax.width) sprites.backParallax.x = sprites.backParallax2.x + sprites.backParallax2.width
+      if(sprites.backParallax2.x < -sprites.backParallax2.width) sprites.backParallax2.x = sprites.backParallax.x + sprites.backParallax.width
     }
 
     sprites.ground.x = 0
@@ -218,7 +235,7 @@ const loop = (delta) => {
   }
 
   // death
-  if(data.life < 0 && isLicornOnGround()){
+  if(data.life < 0 && util.isLicornOnGround()){
     data.ended = true
     localStorage.setItem('score', data.score)
     window.location.href = '/result'

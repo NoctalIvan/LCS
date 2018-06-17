@@ -1,22 +1,33 @@
-1) On est les frères Sedletzki et on vous présente LCS _ licorn crush saga
+Bonjour à tous, moi c'est Ivan et lui c'est Hugo,
+On est les frères Sedletzki et on vous présente LCS _ licorn crush saga
 
-2) Pour sauver la planête, on s'est intéressés à la problématique du recyclage
-C'est des petits pas qui font changer les choses
-Et c'est pour ça qu'on va commencer notre conquète du monde en targettant une problématique bien précise
-Celle du recyclage dans les espaces publics
+2) Pour sauver la planête, on s'est intéressés à la problématique du recyclage, avec un truc bien précis
+Recyclage espaces publics
 
-3) Example de la poubelle du jardin
-Les gens 
-
-Pire - le canal st martin à Paris
+Meme si le recyclage chez soi commence à rentrer dans les moeurs
+C'est pas la même pour les rues, les jardins et les espace
+C'est un contexte où on ça passe au second plan parce qu'on est entre amis
+Et que bien souvent la bouteille de bière finit dans une poubelle générique
 
 4) Notre solution
+Il faut que l'action de recycler sa canette ne soit pas vue comme un effort
 GAMIFICATION du recyclage en soirée
-Poubelles connectées que vous pouvez voir comme des bornes d'arcade publiques 
+Poubelles connectées que vous pouvez voir comme des bornes d'arcade publiques
+
+Fonctionnement avec hugo
 
 5) Gameplay
+On est partis sur un runner
+ - arcade
+ - scoring
+ - très populaire & accessible, pour tout age et tout niveau
+
+ - gameplay
 
  - dessins hugo 48h
- - code 48h
- - vous pouvez tester le jeu vous même avec parties illimitées
- - 
+ - vous pouvez tester le jeu vous même avec parties illimitées - http://tech.mlclm.fr
+ - algo génétique
+
+ 6) Actionnabilité
+Le concept n'est pas nouveau - Russie, Efrei - remboursement d'une partie du prix du produit
+Mais il manque un truc à tous ces projets : des licornes.
