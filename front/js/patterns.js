@@ -68,7 +68,7 @@ const isColliding = (s1, s2) => {
 
 const checkLicornCollision = () => {
   const pats = (patternSprites || []).concat(oldPatternSprites || []).filter(a => !a.collided)
-  const licornHitbox = {... sprites.licorn,  x: sprites.licorn.x + 20, y: sprites.licorn.y + 20, width: sprites.licorn.width - 40, height: sprites.licorn.height - 40}
+  const licornHitbox = {... sprites.licorn,  x: sprites.licorn.x + 25, y: sprites.licorn.y + 25, width: sprites.licorn.width - 50, height: sprites.licorn.height - 50}
   for(const pat of pats) {
     if(isColliding(licornHitbox, pat)) return pat
   }

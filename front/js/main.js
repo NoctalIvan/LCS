@@ -22,7 +22,7 @@ function setup() {
   document.body.appendChild(app.view);
 
   const getImagePath = (a) => 'js/assets/' + a + ".png"
-  let images = ["health", "licorn", "parallax", "backParallax", "ground", "mine", "coin", "life", "boost", "cloud", "groundMine"]
+  let images = ["health", "licorn1", "licorn2", 'licorn3', 'licorn4', 'licorn5', 'licorn6', 'licornDown', 'licornUp', 'licornGlide', 'licornHurt', "parallax", "backParallax", "ground", "mine", "coin", "life", "boost", "cloud", "groundMine"]
 
   data = {
     time: 0,
@@ -38,6 +38,10 @@ function setup() {
     superMode: 0,
     points: 0,
     invAlternator: 0,
+
+    animateFrame: 0,
+    frameSpeed: 5,
+    frameTimeout: 5,
   }
 
   let loader = PIXI.loader.add(images.map(getImagePath)).load(() => {
@@ -54,7 +58,7 @@ function setup() {
       ground2: new PIXI.Sprite(textures.ground),
       logo: new PIXI.Sprite(textures.logo),
       health: new PIXI.Sprite(textures.health),
-      licorn: new PIXI.Sprite(textures.licorn),
+      licorn: new PIXI.Sprite(textures.licorn1),
     }
 
     // positions
@@ -191,6 +195,27 @@ const loop = (delta) => {
     sprites.licorn.alpha = 0
   } else sprites.licorn.alpha = 1
 
+  data.frameTimeout --
+  if(data.frameTimeout <= 0) {
+    data.frameTimeout = data.frameSpeed
+    data.animateFrame = (data.animateFrame + 1) % 6
+  }
+
+  if(data.inv > 0) {
+    sprites.licorn.texture = textures.licornHurt
+  } else if(data.isGliding) {
+    sprites.licorn.texture = textures.licornGlide
+  } else if(!util.isLicornOnGround()){
+    if(data.momentum < 0) {
+      sprites.licorn.texture = textures.licornUp
+    } else {
+      sprites.licorn.texture = textures.licornDown
+    }
+  }
+  else {
+    sprites.licorn.texture = textures['licorn' + (data.animateFrame + 1)]
+  }
+
   // momentum
   if(!data.isGliding) {
     sprites.licorn.y += data.momentum
@@ -238,7 +263,7 @@ const loop = (delta) => {
   if(data.life < 0 && util.isLicornOnGround()){
     data.ended = true
     localStorage.setItem('score', data.score)
-    window.location.href = '/result'
+    window.location.reload()
   }
 }
 
